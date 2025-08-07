@@ -4,12 +4,12 @@ const { chats } = require("../data/data");
 const { protect } = require("../middleware/authMiddleware");
 const{accessChat, fetchChats, createGroupChat, renameGroup, addToGroup, removeFromGroup} = require ("../controllers/chatController")
 
-router.route("/").post(protect,accessChat);
-router.route("/").get(protect, fetchChats);
-router.route("/group").post(protect, createGroupChat);
-router.route("/rename").put(protect, renameGroup);
-router.route("/groupadd").put(protect, addToGroup);
-router.route("/groupremove").put(protect, removeFromGroup);
+router.route("/:accesschat").post(protect,accessChat);
+router.route("/:fetchchat").get(protect, fetchChats);
+router.route("/:group").post(protect, createGroupChat);
+router.route("/:rename").put(protect, renameGroup);
+router.route("/:groupadd").put(protect, addToGroup);
+router.route("/:groupremove").put(protect, removeFromGroup);
 
 
 
