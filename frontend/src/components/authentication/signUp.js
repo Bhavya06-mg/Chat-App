@@ -18,6 +18,7 @@ const SignUp = () => {
   const [confirmPswd,setConfirmpassword] = useState();
   const [pic,setPic] = useState();
   const [loading, setLoading] = useState(false)
+   const [picLoading, setPicLoading] = useState(false);
 
 
   const submitHandler = async () =>{
@@ -47,7 +48,7 @@ const SignUp = () => {
     try{
       const config = {
         headers: {
-          "Content-type":"application/json",
+          "Content-Type":"application/json",
         },
       };
       const { data } = await axios.post(
@@ -110,11 +111,11 @@ const SignUp = () => {
       }).then((res) => res.json()).then((data) =>{
         setPic(data.url.toString());
         console.log(data.url.toString());
-        setLoading(false);
+        setPicLoading(false);
       })
          .catch((err) => {
           console.log(err);
-          setLoading(false);
+          setPicLoading(false);
         });
 
     }
