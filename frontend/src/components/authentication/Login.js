@@ -3,6 +3,7 @@ import { useToast } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import axios from "axios"
+import { ChatState } from '../../Context/ChatProvider'
 
 
   const Login = () => {
@@ -12,6 +13,8 @@ import axios from "axios"
   const [email,setEmail] = useState();
   const [password,setPassword] = useState();
   const [loading, setLoading] = useState(false)
+
+  const { setUser } =ChatState()
 
 
    const handleClick = () => setShow(!show)
@@ -52,6 +55,7 @@ import axios from "axios"
         isClosable: true,
         position:"bottom"
       })
+      setUser(data);
       localStorage.setItem('userInfo', JSON.stringify(data));
       setLoading(false)
       history.push('/chats')
@@ -117,8 +121,8 @@ import axios from "axios"
   colorScheme="red"
   width="100%"
   onClick={() => {
-  setEmail("guest@example.com");
-  setPassword("123456");
+    setEmail("guest@example.com");
+    setPassword("123456");
  }}
  >
 Get Guest User Credential
