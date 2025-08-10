@@ -194,7 +194,7 @@ const SignUp = () => {
         <Input 
         type='file'
         p={1.5}
-        accept='image/*'
+        accept='image/'
         onChange={(e) => postDetails(e.target.files[0])}
         />
       </FormControl>
