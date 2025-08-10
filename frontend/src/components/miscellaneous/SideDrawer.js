@@ -12,36 +12,33 @@ import axios from "axios";
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
-  DrawerCloseButton,
 } from '@chakra-ui/react'
 import ChatLoading from '../ChatLoading'
 import UserListItem from '../UserAvatar/UserListItem'
 import { getSender } from '../../config/ChatLogics'
-import {Badge} from "@chakra-ui/react"
-
+import { Badge } from "@chakra-ui/react"
 
 const SideDrawer = () => {
-  const { user, setSelectedChat, chats, setChats, notification, setNotification } = ChatState(); 
-   
-  const [search, setSearch] = useState();
+  const { user, setSelectedChat, chats, setChats, notification, setNotification } = ChatState();
+
+  // Initialize with empty string and false to avoid controlled/uncontrolled warnings
+  const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadingChat, setLoadingChat] = useState();
+  const [loadingChat, setLoadingChat] = useState(false);
   const history = useHistory()
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const toast =useToast()
-  
+  const toast = useToast()
 
-  if (!user) return <div>Loading context...</div>;  
+  if (!user) return <div>Loading context...</div>;
 
-   const logoutHandler = () => {
+  const logoutHandler = () => {
     localStorage.removeItem("userInfo");
     history.push("/");
-  };  
+  };
 
   const handleSearch = async () => {
     if (!search) {
@@ -54,7 +51,7 @@ const SideDrawer = () => {
       });
       return;
     }
-     try {
+    try {
       setLoading(true);
 
       const config = {
@@ -79,7 +76,6 @@ const SideDrawer = () => {
     }
   };
 
-
   const accessChat = async (userId) => {
     console.log(userId);
 
@@ -93,7 +89,8 @@ const SideDrawer = () => {
       };
       const { data } = await axios.post(`/api/chat`, { userId }, config);
 
-      if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+      // Safeguard chats possibly being undefined
+      if (!chats?.find((c) => c._id === data._id)) setChats([data, ...(chats || [])]);
       setSelectedChat(data);
       setLoadingChat(false);
       onClose();
@@ -139,9 +136,9 @@ const SideDrawer = () => {
         <div>
           <Menu>
             <MenuButton>
-              <BellIcon fontSize={"2xl"} m={1}/>
+              <BellIcon fontSize={"2xl"} m={1} />
               {notification.length > 0 && (
-                <Badge 
+                <Badge
                   position="absolute"
                   top="2"
                   right="99"
@@ -163,30 +160,30 @@ const SideDrawer = () => {
                   setNotification(notification.filter((n) => n !== notif));
                 }}
                 >
-                {notif.chat.isGroupChat
-                ? `New Message in ${notif.chat.chatName}`
-                : `New Message from ${getSender(user, notif.chat.users)}`}
+                  {notif.chat.isGroupChat
+                    ? `New Message in ${notif.chat.chatName}`
+                    : `New Message from ${getSender(user, notif.chat.users)}`}
                 </MenuItem>
               ))}
-            </MenuList> 
+            </MenuList>
           </Menu>
           <Menu>
-            <MenuButton 
-              as={Button} 
-              rightIcon={<ChevronDownIcon/>}
+            <MenuButton
+              as={Button}
+              rightIcon={<ChevronDownIcon />}
             >
-              <Avatar 
-                size={'sm'} 
-                cursor={'pointer'} 
+              <Avatar
+                size={'sm'}
+                cursor={'pointer'}
                 name={user.name}
                 src={user.pic}
               />
             </MenuButton>
             <MenuList>
               <ProfileModal user={user}>
-              <MenuItem>My Profile</MenuItem>
+                <MenuItem>My Profile</MenuItem>
               </ProfileModal>
-              <MenuDivider/>
+              <MenuDivider />
               <MenuItem onClick={logoutHandler}>
                 Logout
               </MenuItem>
@@ -203,21 +200,21 @@ const SideDrawer = () => {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader borderBottomWidth={"1px"}>Search Users</DrawerHeader>
-                  <DrawerBody>
-          <Box display={"flex"} pb={2}>
-            <Input
-              placeholder='Search by name or email'
-              margin={2}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <Button
-             onClick={handleSearch}
-             margin={2}
-             >
-              Go
-            </Button>
-          </Box>
+          <DrawerBody>
+            <Box display={"flex"} pb={2}>
+              <Input
+                placeholder='Search by name or email'
+                margin={2}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <Button
+                onClick={handleSearch}
+                margin={2}
+              >
+                Go
+              </Button>
+            </Box>
             {loading ? (
               <ChatLoading />
             ) : (
@@ -230,11 +227,10 @@ const SideDrawer = () => {
               ))
             )}
             {loadingChat && <Spinner ml="auto" d="flex" />}
-        </DrawerBody>
+          </DrawerBody>
         </DrawerContent>
-
       </Drawer>
-   </>
+    </>
   );
 };
 

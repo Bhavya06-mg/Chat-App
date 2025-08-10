@@ -7,7 +7,8 @@ const messageRoutes = require("./routes/messageRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 
-dotenv.config();
+dotenv.config({ quiet: true });
+
 connectDB();
 const app = express();
 
@@ -16,6 +17,24 @@ app.use(express.json()); // to accept json data
 // app.get("/", (req, res) => {
 //   res.send("API Running!");
 // });
+
+// Debug: Log every route being registered
+const origUse = app.use.bind(app);
+app.use = (path, ...handlers) => {
+  if (typeof path === "string") {
+    console.log("Registering route:", path);
+  }
+  return origUse(path, ...handlers);
+};
+
+const origGet = app.get.bind(app);
+app.get = (path, ...handlers) => {
+  if (typeof path === "string") {
+    console.log("Registering GET route:", path);
+  }
+  return origGet(path, ...handlers);
+};
+
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
@@ -28,7 +47,7 @@ const __dirname1 = path.resolve();
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname1, "/frontend/build")));
 
-  app.get( " * " , (req, res) =>
+  app.get( "*" , (req, res) =>
     res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"))
   );
 } else {
